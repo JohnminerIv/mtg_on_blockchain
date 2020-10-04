@@ -1,0 +1,22 @@
+The main token will be a plainswalker.
+
+Each wallet can have one active plainswalker at a time.
+
+If the plainswalker is active it can harvest mana from owned lands.
+This can be done every 6 hours.
+
+If the plainswalker is active it can summon randomly generated creatures
+using owned mana, the strength is based on the mana used.
+
+Each creature can either be in attack or defence. A creature in defence is 
+unable to attack until it is switched to attack mode. A creature can attack
+once every 6 hours. If it has attacked it cannot switch to deffence mode 
+until the 6 hours are up.
+
+While the plainswalker is active it can earn plainar coin that can be
+used to buy permanent or temporary spell cards. This can be harvested
+every 6 hours.
+
+If the plainswalker is killed all mana is lost, as well as all creatures.
+Spell cards and plainar coin is retained. The next harvest of plainar coin 
+is sent to the killer instead.
