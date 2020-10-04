@@ -1,9 +1,10 @@
 pragma solidity ^0.7.0;
 
-import "Land.sol"
+import "LandFactory.sol"
+import "CreatureFactory.sol"
 import "./PlainsWalkerFactory.sol";
 
-contract PlainsWalkerHelper is PlainsWalkerFactory {
+contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
 
     uint plainsWalkerFee = 0.02 ether;
 
@@ -21,7 +22,7 @@ contract PlainsWalkerHelper is PlainsWalkerFactory {
         plainsWalkerFee = _fee;
     }
 
-    function getPlainsWalkersByOwner(address _owner) external view returns(uint[] memory) {
+    function getPlainsWalkersByOwner(address _owner) public view returns(uint[] memory) {
         uint[] memory result = new uint[](ownerPlainsWalkerCount[_owner]);
         uint counter = 0;
         for (uint i = 0; i < plainsWalkers.length; i++) {
@@ -49,7 +50,7 @@ contract PlainsWalkerHelper is PlainsWalkerFactory {
     }
 
     function summonCreature(uint memory _plainsWalkerId, uint memory red, uint memory blue, uint memory green, uint memory black, uint memory white) external ownerOf(uint _plainsWalkerId){
-        
+
 
     }
 

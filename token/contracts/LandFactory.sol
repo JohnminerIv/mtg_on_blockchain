@@ -3,7 +3,7 @@ pragma solidity ^0.7.0;
 import "./ownable.sol";
 import "./SafeMath.sol";
 
-contract Land is Ownable{
+contract LandFactory is Ownable{
 
     using SafeMath for uint256;
 
