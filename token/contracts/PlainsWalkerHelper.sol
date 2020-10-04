@@ -48,7 +48,8 @@ contract PlainsWalkerHelper is PlainsWalkerFactory {
 
     }
 
-    function summonCreature(uint _plainsWalkerId, uint red, uint blue, uint green, uint black, uint white) external ownerOf(uint _plainsWalkerId){
+    function summonCreature(uint memory _plainsWalkerId, uint memory red, uint memory blue, uint memory green, uint memory black, uint memory white) external ownerOf(uint _plainsWalkerId){
+        
 
     }
 
