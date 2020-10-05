@@ -14,7 +14,7 @@ contract LandFactory is Ownable{
 
     mapping (uint => address) public landToOwner;
     mapping (address => uint) public landOwnerCount;
-    string[5] landNames;
+    mapping (uint => string) public landNames;
     landNames[0] = 'Red';
     landNames[1] = 'Green';
     landNames[2] = 'Blue';

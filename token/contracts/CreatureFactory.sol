@@ -11,9 +11,10 @@ contract CreatureFactory{
         uint16 defence;
         uint32 readyTime;
         string special;
+        bool isDefending;
     }
 
-    function createCreature(uint plainsWalkerId, uint[] mana) internal {
+    function createCreature(uint plainsWalkerId, uint[] mana) internal returns (Creature) {
         uint memory totalCost;
         uint memory greatest;
         uint memory indexOfGreatest;
@@ -38,27 +39,25 @@ contract CreatureFactory{
             defence ++;
         }
         uint rand = uint(keccak256(abi.encodePacked(mana))) % 10;
+        string special = 'None';
         if (rand > 7){
             if (indexOfGreatest == 0){
-                string special = 'generate mana'
+                special = 'generate mana';
             }
             if (indexOfGreatest == 1){
-                string special = 'Zap'
+                special = 'Zap';
             }
             if (indexOfGreatest == 2){
-                string special = 'Unblockable'
+                special = 'Unblockable';
             }
             if (indexOfGreatest == 3){
-                string special = 'life drain'
+                special = 'life drain';
             }
             if (indexOfGreatest == 4){
-                string special = 'Heal'
+                special = 'Heal';
             }
         }
-        else{
-            string special = 'None'
-        }
-        uint id = creatures.push(Creature(attack, defence, now + 6 hours, special))
+        return Creature(attack, defence, now + 6 hours, special, false);
     }
 
 }

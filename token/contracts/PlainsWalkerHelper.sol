@@ -1,6 +1,6 @@
 pragma solidity ^0.7.0;
 
-import "LandFactory.sol"
+import "./LandFactory.sol";
 import "./PlainsWalkerFactory.sol";
 
 contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
@@ -33,23 +33,7 @@ contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
         return result;
     }
 
-    function collectManaFromLands(uint _plainsWalkerId) external ownerOf(uint _plainsWalkerId){
-        uint[] memory mana = colletMana(msg.sender);
-        if (plainsWalkers[_plainsWalkerId].health > 0){
-            plainsWalkers[_plainsWalkerId].redMana += mana[0]
-            plainsWalkers[_plainsWalkerId].greenMana += mana[1]
-            plainsWalkers[_plainsWalkerId].blueMana += mana[2]
-            plainsWalkers[_plainsWalkerId].blackMana += mana[3]
-            plainsWalkers[_plainsWalkerId].whiteMana += mana[4]
-        }
-    }
-
     function purchasePlainsWalker(string _name) payable {
-
-    }
-
-    function summonCreature(uint memory _plainsWalkerId, uint memory red, uint memory blue, uint memory green, uint memory black, uint memory white) external ownerOf(uint _plainsWalkerId){
-
 
     }
 

@@ -2,23 +2,23 @@ pragma solidity ^0.7.0;
 
 import "./ownable.sol";
 import "./SafeMath.sol";
-import "./CreatureFactory.sol"
+import "./CreatureFactory.sol";
 
 contract PlainsWalkerFactory is Ownable, CreatureFactory{
 
     using SafeMath for uint256;
 
-    uint modulus = 10000000000;
+    uint modulus = 100000;
 
     event NewPlainswalker(uint PlainsWalkerId, string name, uint dna);
 
     struct PlainsWalker {
         string name;
         uint64 dna;
-        uint16 hitpoints;
+        uint16 health;
         uint16 redMana;
-        uint16 blueMana;
         uint16 greenMana;
+        uint16 blueMana;
         uint16 blackMana;
         uint16 whiteMana;
         Creature[] creatures;
@@ -41,7 +41,7 @@ contract PlainsWalkerFactory is Ownable, CreatureFactory{
     function _generateRandomDna(string memory _str, address memory _address) private veiw returns (uint){
         uint rand = uint(keccak256(abi.encodePacked(_str)));
         uint rand2 = uint(keccak256(abi.encodePacked(_address)));
-        return (rand + rand2) % modulus
+        return (rand + rand2) % modulus;
     }
 
     function createRandomPlainsWalker(string memory _name) public {
