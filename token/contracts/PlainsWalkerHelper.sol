@@ -1,7 +1,6 @@
 pragma solidity ^0.7.0;
 
 import "LandFactory.sol"
-import "CreatureFactory.sol"
 import "./PlainsWalkerFactory.sol";
 
 contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {

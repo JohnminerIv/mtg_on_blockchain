@@ -2,7 +2,7 @@ pragma solidity ^0.7.0;
 
 import "./SafeMath.sol";
 
-contract Creatures{
+contract CreatureFactory{
 
     using SafeMath for uint256;
 
@@ -12,11 +12,6 @@ contract Creatures{
         uint32 readyTime;
         string special;
     }
-
-    mapping (uint => uint) creatureToPlainsWalker;
-    mapping (uint => uint) plainsWalkerCreatureCount;
-
-    Creature[] creatures;
 
     function createCreature(uint plainsWalkerId, uint[] mana) internal {
         uint memory totalCost;
@@ -60,6 +55,10 @@ contract Creatures{
                 string special = 'Heal'
             }
         }
+        else{
+            string special = 'None'
+        }
+        uint id = creatures.push(Creature(attack, defence, now + 6 hours, special))
     }
 
 }
