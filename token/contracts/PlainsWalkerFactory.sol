@@ -1,12 +1,12 @@
 pragma solidity ^0.7.0;
 
-import "./ownable.sol";
+import "./Ownable.sol";
 import "./SafeMath.sol";
 import "./CreatureFactory.sol";
 
 contract PlainsWalkerFactory is Ownable, CreatureFactory{
 
-    using SafeMath for uint256;
+    // using SafeMath for uint256;
 
     uint modulus = 100000;
 
@@ -21,24 +21,26 @@ contract PlainsWalkerFactory is Ownable, CreatureFactory{
         uint16 blueMana;
         uint16 blackMana;
         uint16 whiteMana;
-        Creature[] creatures;
+        uint[] creatures;
     }
 
-    Plainswalker[] plainsWalkers;
-
+    PlainsWalker[] plainsWalkers;
+    mapping (uint => Creature) public plainsWalkersToCreature;
     mapping (uint => address) public plainsWalkerToOwner;
     mapping (address => uint) public ownerPlainsWalkerCount;
     mapping (address => bool) firstOwnerBool;
 
-    function _createPlainswalker(string memory _name, uint64 _dna, uint _health) internal{
-        uint id = plainsWalkers.push(PlainsWalker(_name, _dna, _health, 0,0,0,0,0)) - 1;
+    function _createPlainswalker(string memory _name, uint64 _dna, uint16 _health) internal{
+        uint[] memory list;
+        plainsWalkers.push(PlainsWalker(_name, _dna, _health, 0,0,0,0,0, list));
+        uint id = plainsWalkers.length - 1;
         plainsWalkerToOwner[id] = msg.sender;
-        firstBool[msg.sender] = true;
+        firstOwnerBool[msg.sender] = true;
         ownerPlainsWalkerCount[msg.sender]++;
         emit NewPlainswalker(id, _name, _dna);
     }
 
-    function _generateRandomDna(string memory _str, address memory _address) private veiw returns (uint){
+    function _generateRandomDna(string memory _str, address _address) private view returns (uint){
         uint rand = uint(keccak256(abi.encodePacked(_str)));
         uint rand2 = uint(keccak256(abi.encodePacked(_address)));
         return (rand + rand2) % modulus;
@@ -47,7 +49,7 @@ contract PlainsWalkerFactory is Ownable, CreatureFactory{
     function createRandomPlainsWalker(string memory _name) public {
         require(firstOwnerBool[msg.sender] != true);
         uint64 randDna = uint64(_generateRandomDna(_name, msg.sender));
-        _createPlainswalker(_name, randDna);
+        _createPlainswalker(_name, randDna, 100);
     }
 
     function changeName(uint _plainsWalkerId, string calldata _newName) external {

@@ -12,11 +12,6 @@ contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
         _;
     }
 
-    function withdraw() external onlyOwner {
-        address _owner = owner();
-        _owner.transfer(address(this).balance);
-    }
-
     function setPlainsWalkerFee(uint _fee) external onlyOwner {
         plainsWalkerFee = _fee;
     }
@@ -33,7 +28,7 @@ contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
         return result;
     }
 
-    function purchasePlainsWalker(string _name) payable {
+    function purchasePlainsWalker(string memory _name) external payable {
 
     }
 

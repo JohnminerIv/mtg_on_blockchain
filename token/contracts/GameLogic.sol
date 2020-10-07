@@ -17,84 +17,101 @@ contract GameLogic is PlainsWalkerHelper{
         plainsWalkers[_plainsWalkerId].blueMana = 0;
         plainsWalkers[_plainsWalkerId].whiteMana = 0;
         plainsWalkers[_plainsWalkerId].health = 0;
-        plainsWalkers[_plainsWalkerId].creatures = Creatures[];
+        for (uint i; i < plainsWalkers[_plainsWalkerId].creatures.length; i++){
+            deletedCreatureIds.push(plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[i]].id);
+            delete plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[i]];
+        }
+        uint[] memory creatures;
+        plainsWalkers[_plainsWalkerId].creatures = creatures;
     }
 
     function revivePlainsWalker(uint _plainsWalkerId) external payable ownerOf(_plainsWalkerId){
-        require(msg.value >= 0.001);
+        require(msg.value >= 0.001 ether);
         require(plainsWalkers[_plainsWalkerId].health == 0);
         plainsWalkers[_plainsWalkerId].health = 100;
     }
 
     function collectManaFromLands(uint _plainsWalkerId) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
-        uint[] memory mana = colletMana(msg.sender);
+        uint16[] memory mana = collectMana(msg.sender);
         plainsWalkers[_plainsWalkerId].redMana += mana[0];
         plainsWalkers[_plainsWalkerId].greenMana += mana[1];
         plainsWalkers[_plainsWalkerId].blueMana += mana[2];
         plainsWalkers[_plainsWalkerId].blackMana += mana[3];
         plainsWalkers[_plainsWalkerId].whiteMana += mana[4];
     }
-   function summonCreature(uint memory _plainsWalkerId, uint memory red,  uint memory green, uint memory blue, uint memory black, uint memory white) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
-       uint[5] memory mana;
-       mana[0] = red;
-       mana[1] = green;
-       mana[2] = blue;
-       mana[3] = black;
-       mana[4] = white;
-       plainsWalkers[_plainsWalkerId].creatures.push(createCreature(_plainsWalkerId, mana));
+   function summonCreature(uint _plainsWalkerId, uint red,  uint green, uint blue, uint black, uint white) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
+        require( plainsWalkers[_plainsWalkerId].redMana >= red);
+        require( plainsWalkers[_plainsWalkerId].blueMana >= blue);
+        require( plainsWalkers[_plainsWalkerId].greenMana >= green);
+        require( plainsWalkers[_plainsWalkerId].blackMana >= black);
+        require( plainsWalkers[_plainsWalkerId].whiteMana >= white);
+        plainsWalkers[_plainsWalkerId].redMana -= uint16(red);
+        plainsWalkers[_plainsWalkerId].blueMana -= uint16(blue);
+        plainsWalkers[_plainsWalkerId].greenMana -= uint16(green);
+        plainsWalkers[_plainsWalkerId].blackMana -= uint16(black);
+        plainsWalkers[_plainsWalkerId].whiteMana -= uint16(white);
+        uint[5] memory mana;
+        mana[0] = red;
+        mana[1] = green;
+        mana[2] = blue;
+        mana[3] = black;
+        mana[4] = white;
+        Creature memory creature;
+        creature = createCreature(mana);
+        plainsWalkersToCreature[creature.id] = creature;
+        plainsWalkers[_plainsWalkerId].creatures.push(uint(creature.id));
     }
-    function setCreatureToDefend(uint memory _plainsWalkerId, uint memory _creatureId) external ownerOf(_plainsWalkerId){
-        plainsWalkers[_plainsWalkerId].creatures[_creatureId].isDefending = true;
+    function setCreatureToDefend(uint _plainsWalkerId, uint _creatureIndex) external ownerOf(_plainsWalkerId){
+        plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].isDefending = true;
     }
-    function setCreatureToAttack(uint memory _plainsWalkerId, uint memory _creatureId) external ownerOf(_plainsWalkerId){
-        plainsWalkers[_plainsWalkerId].creatures[_creatureId].isDefending = false;
+    function setCreatureToAttack(uint _plainsWalkerId, uint _creatureIndex) external ownerOf(_plainsWalkerId){
+        plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].isDefending = false;
     }
-    function delCreature(uint memory _plainswalkerId, uint memory _creatureId) internal {
-        plainsWalkers[_plainsWalkerId].creatures[_creatureId] = plainsWalkers[_plainsWalkerId].creatures[plainsWalkers[_plainsWalkerId].creatures.length - 1];
+    function delCreature(uint _plainsWalkerId, uint _creatureIndex) internal {
+        deletedCreatureIds.push(plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].id);
+        plainsWalkers[_plainsWalkerId].creatures[_creatureIndex] = plainsWalkers[_plainsWalkerId].creatures[plainsWalkers[_plainsWalkerId].creatures.length - 1];
         delete plainsWalkers[_plainsWalkerId].creatures[plainsWalkers[_plainsWalkerId].creatures.length - 1];
 
     }
-    function attackWithCreature(uint memory _plainsWalkerId, uint memory _creatureId, uint memory _targetPlainswalkerId){
-        require (_plainsWalkerId != _targetPlainswalkerId);
-        Creature memory attacker = plainsWalkers[_PlainswalkerId].creatures[_creatureId];
-        Creature memory defender;
+    function attackWithCreature(uint _plainsWalkerId, uint _creatureIndex, uint _targetPlainsWalkerId) external ownerOf(_plainsWalkerId){
+        // plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]]
+        // plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]]
+        require (_plainsWalkerId != _targetPlainsWalkerId);
         bool foundCreature = false;
-        for (uint i = 0; i < plainsWalkers[_targetPlainswalkerId].creatures.length; i++) {
-            if (plainsWalkers[_targetPlainswalkerId].creatures[i].isDefending == true) {
+        uint index;
+        for (uint i = 0; i < plainsWalkers[_targetPlainsWalkerId].creatures.length; i++) {
+            if (plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[i]].isDefending == true) {
                 foundCreature = true;
-                defender = plainsWalkers[_targetPlainswalkerId].creatures[i];
                 break;
             }
+        index++;
         }
         if (foundCreature == false){
-            if (attacker.attack >= plainsWalkers[_targetPlainswalkerId].health){
-                plainsWalkerDied(_targetPlainswalkerId);
+            if (plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].attack >= plainsWalkers[_targetPlainsWalkerId].health){
+                plainsWalkerDied(_targetPlainsWalkerId);
             } else {
-                plainsWalkers[_targetPlainswalkerId].health -= attacker.attack;
+                plainsWalkers[_targetPlainsWalkerId].health -= plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].attack;
             }
         } else {
-            bool memory attackerDied = false;
-            bool memory defenderDied = false;
-            if (attacker.attack >= defender.defence){
+            bool attackerDied = false;
+            bool defenderDied = false;
+            if (plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].attack >= plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]].defence){
                 defenderDied = true;
             } else {
-                plainsWalkers[_targetPlainswalkerId].creatures[i].defence -= attacker.attack;
+                plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]].defence -= plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].attack;
             }
-            if (defender.attack >= attacker.defence){
+            if (plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]].attack >= plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].defence){
                 attackerDied = true;
             } else {
-                plainsWalkers[_PlainswalkerId].creatures[_creatureId].defence -= defender.attack;
+                plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].defence -= plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]].attack;
             }
             if (attackerDied){
-                delCreature(_plainsWalkerId, _creatureId);
+                delCreature(_plainsWalkerId, _creatureIndex);
             }
             if (defenderDied){
-                delCreature(_targetPlainsWalkerId, i);
+                delCreature(_targetPlainsWalkerId, index);
             }
         }
-
-    }
-    function defendWithCreatures(uint memory _plainsWalkerId, Creature attacker) internal{
 
     }
 }
