@@ -1,12 +1,9 @@
 pragma solidity ^0.7.0;
 
 import "./Ownable.sol";
-import "./SafeMath.sol";
 import "./CreatureFactory.sol";
 
 contract PlainsWalkerFactory is Ownable, CreatureFactory{
-
-    // using SafeMath for uint256;
 
     uint modulus = 100000;
 

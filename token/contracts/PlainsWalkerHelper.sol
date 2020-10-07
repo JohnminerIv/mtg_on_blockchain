@@ -1,9 +1,8 @@
 pragma solidity ^0.7.0;
 
-import "./LandFactory.sol";
 import "./PlainsWalkerFactory.sol";
 
-contract PlainsWalkerHelper is PlainsWalkerFactory, LandFactory  {
+contract PlainsWalkerHelper is PlainsWalkerFactory{
 
     uint plainsWalkerFee = 0.02 ether;
 

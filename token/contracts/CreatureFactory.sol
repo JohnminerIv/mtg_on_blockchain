@@ -1,10 +1,6 @@
 pragma solidity ^0.7.0;
 
-import "./SafeMath.sol";
-
 contract CreatureFactory{
-
-    // using SafeMath for uint256;
 
     struct Creature{
         uint id;

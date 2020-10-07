@@ -1,11 +1,8 @@
 pragma solidity ^0.7.0;
 
 import "./Ownable.sol";
-import "./SafeMath.sol";
 
 contract LandFactory is Ownable{
-
-    // using SafeMath for uint256;
 
     struct Land {
         string landType;
@@ -51,7 +48,8 @@ contract LandFactory is Ownable{
         return result;
     }
 
-    function collectMana(address _owner) internal returns(uint16[] memory) {
+    function collectMana(address _owner) external returns(uint16[] memory) {
+        // require(msg.sender == _owner);
         uint16[] memory result = new uint16[](5);
         for (uint i = 0; i < lands.length; i++) {
             if (landToOwner[i] == _owner) {

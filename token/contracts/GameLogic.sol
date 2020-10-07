@@ -1,9 +1,18 @@
 pragma solidity ^0.7.0;
 
-import "./LandFactory.sol";
 import "./PlainsWalkerHelper.sol";
 
+interface LandInterface{
+    function collectMana(address _owner) external returns(uint16[] memory);
+}
+
 contract GameLogic is PlainsWalkerHelper{
+
+    LandInterface landContract;
+
+    function setLandContractAddress(address _address) external onlyOwner {
+        landContract = LandInterface(_address);
+    }
 
     modifier isAlive(uint _plainsWalkerId) {
         require(plainsWalkers[_plainsWalkerId].health > 0);
@@ -32,7 +41,7 @@ contract GameLogic is PlainsWalkerHelper{
     }
 
     function collectManaFromLands(uint _plainsWalkerId) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
-        uint16[] memory mana = collectMana(msg.sender);
+        uint16[] memory mana = landContract.collectMana(msg.sender);
         plainsWalkers[_plainsWalkerId].redMana += mana[0];
         plainsWalkers[_plainsWalkerId].greenMana += mana[1];
         plainsWalkers[_plainsWalkerId].blueMana += mana[2];
