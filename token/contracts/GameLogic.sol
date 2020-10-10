@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 import "./PlainsWalkerHelper.sol";
 
@@ -34,13 +34,13 @@ contract GameLogic is PlainsWalkerHelper{
         plainsWalkers[_plainsWalkerId].creatures = creatures;
     }
 
-    function revivePlainsWalker(uint _plainsWalkerId) external payable ownerOf(_plainsWalkerId){
+    function revivePlainsWalker(uint _plainsWalkerId) external payable ownerOfPlainsWalker(_plainsWalkerId){
         require(msg.value >= 0.001 ether);
         require(plainsWalkers[_plainsWalkerId].health == 0);
         plainsWalkers[_plainsWalkerId].health = 100;
     }
 
-    function collectManaFromLands(uint _plainsWalkerId) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
+    function collectManaFromLands(uint _plainsWalkerId) external ownerOfPlainsWalker(_plainsWalkerId) isAlive(_plainsWalkerId){
         uint16[] memory mana = landContract.collectMana(msg.sender);
         plainsWalkers[_plainsWalkerId].redMana += mana[0];
         plainsWalkers[_plainsWalkerId].greenMana += mana[1];
@@ -48,7 +48,7 @@ contract GameLogic is PlainsWalkerHelper{
         plainsWalkers[_plainsWalkerId].blackMana += mana[3];
         plainsWalkers[_plainsWalkerId].whiteMana += mana[4];
     }
-   function summonCreature(uint _plainsWalkerId, uint red,  uint green, uint blue, uint black, uint white) external ownerOf(_plainsWalkerId) isAlive(_plainsWalkerId){
+   function summonCreature(uint _plainsWalkerId, uint red,  uint green, uint blue, uint black, uint white) external ownerOfPlainsWalker(_plainsWalkerId) isAlive(_plainsWalkerId){
         require( plainsWalkers[_plainsWalkerId].redMana >= red);
         require( plainsWalkers[_plainsWalkerId].blueMana >= blue);
         require( plainsWalkers[_plainsWalkerId].greenMana >= green);
@@ -70,10 +70,10 @@ contract GameLogic is PlainsWalkerHelper{
         plainsWalkersToCreature[creature.id] = creature;
         plainsWalkers[_plainsWalkerId].creatures.push(uint(creature.id));
     }
-    function setCreatureToDefend(uint _plainsWalkerId, uint _creatureIndex) external ownerOf(_plainsWalkerId){
+    function setCreatureToDefend(uint _plainsWalkerId, uint _creatureIndex) external ownerOfPlainsWalker(_plainsWalkerId){
         plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].isDefending = true;
     }
-    function setCreatureToAttack(uint _plainsWalkerId, uint _creatureIndex) external ownerOf(_plainsWalkerId){
+    function setCreatureToAttack(uint _plainsWalkerId, uint _creatureIndex) external ownerOfPlainsWalker(_plainsWalkerId){
         plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]].isDefending = false;
     }
     function delCreature(uint _plainsWalkerId, uint _creatureIndex) internal {
@@ -82,7 +82,7 @@ contract GameLogic is PlainsWalkerHelper{
         delete plainsWalkers[_plainsWalkerId].creatures[plainsWalkers[_plainsWalkerId].creatures.length - 1];
 
     }
-    function attackWithCreature(uint _plainsWalkerId, uint _creatureIndex, uint _targetPlainsWalkerId) external ownerOf(_plainsWalkerId){
+    function attackWithCreature(uint _plainsWalkerId, uint _creatureIndex, uint _targetPlainsWalkerId) external ownerOfPlainsWalker(_plainsWalkerId){
         // plainsWalkersToCreature[plainsWalkers[_targetPlainsWalkerId].creatures[index]]
         // plainsWalkersToCreature[plainsWalkers[_plainsWalkerId].creatures[_creatureIndex]]
         require (_plainsWalkerId != _targetPlainsWalkerId);

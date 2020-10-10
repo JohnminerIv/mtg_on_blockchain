@@ -1,8 +1,11 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 import "./Ownable.sol";
+import "./SafeMath.sol";
 
 contract LandFactory is Ownable{
+
+    using SafeMath for uint256;
 
     struct Land {
         string landType;
@@ -11,18 +14,11 @@ contract LandFactory is Ownable{
 
     mapping (uint => address) public landToOwner;
     mapping (address => uint) public landOwnerCount;
-    string[5] public landNames;
-    constructor() {
-        landNames[0] = 'Red';
-        landNames[1] = 'Green';
-        landNames[2] = 'Blue';
-        landNames[3] = 'Black';
-        landNames[4] = 'White';
-    }
+    string[5] public landNames = ['Red', 'Green', 'Blue', 'Black', 'White'];
     Land[] lands;
 
     function generateRandomLand() external payable {
-        require(msg.value == 0.005 ether || landOwnerCount[msg.sender] == 0);
+        require(msg.value >= 0.005 ether || landOwnerCount[msg.sender] == 0);
         uint rand = uint(keccak256(abi.encodePacked(lands.length, msg.sender)));
         rand = rand % 5;
         lands.push(Land(landNames[rand], uint32(block.timestamp)));
@@ -32,7 +28,7 @@ contract LandFactory is Ownable{
     }
 
     function withdraw() external onlyOwner {
-        address payable _owner = owner();
+        address payable _owner = payable(owner());
         _owner.transfer(address(this).balance);
     }
 
@@ -62,6 +58,11 @@ contract LandFactory is Ownable{
             }
         }
         return result;
+    }
+
+    modifier ownerOfLand(uint _landId) {
+        require(msg.sender == landToOwner[_landId]);
+        _;
     }
 
 

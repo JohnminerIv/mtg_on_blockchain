@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 /**
 * @title Ownable
@@ -6,7 +6,7 @@ pragma solidity ^0.7.0;
 * functions, this simplifies the implementation of "user permissions".
 */
 contract Ownable {
-  address payable private _owner;
+  address private _owner;
 
   event OwnershipTransferred(
     address indexed previousOwner,
@@ -17,7 +17,7 @@ contract Ownable {
   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
   * account.
   */
-  constructor() {
+  constructor() internal {
     _owner = (msg.sender);
     emit OwnershipTransferred(address(0), _owner);
   }
@@ -25,7 +25,7 @@ contract Ownable {
   /**
   * @return the address of the owner.
   */
-  function owner() public view returns(address payable) {
+  function owner() public view returns(address) {
     return _owner;
   }
 
@@ -59,7 +59,7 @@ contract Ownable {
   * @dev Allows the current owner to transfer control of the contract to a newOwner.
   * @param newOwner The address to transfer ownership to.
   */
-  function transferOwnership(address payable newOwner) public onlyOwner {
+  function transferOwnership(address newOwner) public onlyOwner {
     _transferOwnership(newOwner);
   }
 
@@ -67,7 +67,7 @@ contract Ownable {
   * @dev Transfers control of the contract to a newOwner.
   * @param newOwner The address to transfer ownership to.
   */
-  function _transferOwnership(address payable newOwner) internal {
+  function _transferOwnership(address newOwner) internal {
     require(newOwner != address(0));
     emit OwnershipTransferred(_owner, newOwner);
     _owner = newOwner;

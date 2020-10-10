@@ -1,10 +1,10 @@
-pragma solidity ^0.7.0;
-/*
+pragma solidity >=0.4.22 <0.7.0;
+
 library SafeMath {
 
     function add(uint a, uint b) internal pure returns (uint c) {
         c = a + b;
-        require(c >= a);
+        require(c >= a, "Uint Overflow Occured");
         return c;
     }
 
@@ -27,4 +27,3 @@ library SafeMath {
     }
 
 }
-*/

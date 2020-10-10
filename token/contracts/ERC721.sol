@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 /**
  * @dev ERC-721 non-fungible token standard.
@@ -24,11 +24,7 @@ interface ERC721
    * address indicates there is no approved address. When a Transfer event emits, this also
    * indicates that the approved address for that NFT (if any) is reset to none.
    */
-  event Approval(
-    address indexed _owner,
-    address indexed _approved,
-    uint256 indexed _tokenId
-  );
+ 
 
   /**
    * @dev This emits when an operator is enabled or disabled for an owner. The operator can manage

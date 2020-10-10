@@ -1,9 +1,12 @@
-pragma solidity ^0.7.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 import "./Ownable.sol";
+import "./SafeMath.sol";
 import "./CreatureFactory.sol";
 
 contract PlainsWalkerFactory is Ownable, CreatureFactory{
+
+    using SafeMath for uint256;
 
     uint modulus = 100000;
 
@@ -37,19 +40,18 @@ contract PlainsWalkerFactory is Ownable, CreatureFactory{
         emit NewPlainswalker(id, _name, _dna);
     }
 
-    function _generateRandomDna(string memory _str, address _address) private view returns (uint){
-        uint rand = uint(keccak256(abi.encodePacked(_str)));
-        uint rand2 = uint(keccak256(abi.encodePacked(_address)));
-        return (rand + rand2) % modulus;
+    function _generateRandomDna(string memory _str, address _address) internal view returns (uint){
+        uint rand = uint(keccak256(abi.encodePacked(_str, _address, block.timestamp, plainsWalkers.length)));
+        return rand % modulus;
     }
 
-    function createRandomPlainsWalker(string memory _name) public {
+    function createRandomPlainsWalker(string memory _name) external {
         require(firstOwnerBool[msg.sender] != true);
         uint64 randDna = uint64(_generateRandomDna(_name, msg.sender));
         _createPlainswalker(_name, randDna, 100);
     }
 
-    function changeName(uint _plainsWalkerId, string calldata _newName) external {
+    function changeName(uint _plainsWalkerId, string memory _newName) external {
         require(msg.sender == plainsWalkerToOwner[_plainsWalkerId]);
         plainsWalkers[_plainsWalkerId].name = _newName;
     }

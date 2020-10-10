@@ -3,3 +3,9 @@
 reports:
   exclude_contracts:
     - SafeMath
+solc:
+    version: 0.7.0
+    evm_version: null
+    optimize: False
+    runs: 200
+    minify_source: True
