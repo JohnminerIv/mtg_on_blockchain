@@ -25,5 +25,4 @@ library SafeMath {
         c = a / b;
         return c;
     }
-
 }
