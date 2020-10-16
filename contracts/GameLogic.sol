@@ -39,11 +39,11 @@ contract GameLogic is PlainsWalkerHelper, CreatureFactory{
         plainsWalkers[_plainsWalkerId].health = 0;
         for (uint i; i < plainsWalkers[_plainsWalkerId].creatureList.length; i++){
             deletedCreatureIds.push(plainsWalkers[_plainsWalkerId].creatureList[i]);
-            delete creatures[i];
+            delete creatures[plainsWalkers[_plainsWalkerId].creatureList[i]];
         }
         uint[] memory creatureList;
         plainsWalkers[_plainsWalkerId].creatureList = creatureList;
-        plainsWalkers[_plainsWalkerId].isActive == false;
+        plainsWalkers[_plainsWalkerId].isActive = false;
     }
 
     /**
@@ -61,11 +61,9 @@ contract GameLogic is PlainsWalkerHelper, CreatureFactory{
      */
     function collectManaFromLands(uint _plainsWalkerId, uint _landId) external ownerOfPlainsWalker(_plainsWalkerId) isActive(_plainsWalkerId){
         uint16[5] memory mana = landContract._collectManaFromLand(msg.sender, _landId);
-        plainsWalkers[_plainsWalkerId].mana[0] += mana[0];
-        plainsWalkers[_plainsWalkerId].mana[1] += mana[1];
-        plainsWalkers[_plainsWalkerId].mana[2] += mana[2];
-        plainsWalkers[_plainsWalkerId].mana[3] += mana[3];
-        plainsWalkers[_plainsWalkerId].mana[4] += mana[4];
+       for (uint i; i < mana.length; i++){
+            plainsWalkers[_plainsWalkerId].mana[i] += mana[i];
+        }
     }
     
     /**
@@ -76,7 +74,7 @@ contract GameLogic is PlainsWalkerHelper, CreatureFactory{
         // mana should be in this order ['Red', 'Green', 'Blue', 'Black', 'White'].
         uint16[5] memory mana = [red, green, blue, black, white];
         for (uint i; i < mana.length; i++){
-            require( plainsWalkers[_plainsWalkerId].mana[i] >= mana[i]);
+            require(plainsWalkers[_plainsWalkerId].mana[i] >= mana[i]);
         }
         for (uint i; i < mana.length; i++){
             plainsWalkers[_plainsWalkerId].mana[i] -= mana[i];
@@ -113,10 +111,12 @@ contract GameLogic is PlainsWalkerHelper, CreatureFactory{
      * @dev A function that allows a plainswalker to command one of it's creatures to attack another plainswalker
      */
     function attackWithCreature(uint _plainsWalkerId, uint _creatureIndex, uint _targetPlainsWalkerId) external ownerOfPlainsWalker(_plainsWalkerId) isActive(_plainsWalkerId){
-        require(plainsWalkers[_targetPlainsWalkerId].isActive == true);
+        require (plainsWalkers[_targetPlainsWalkerId].isActive == true);
+        require (_plainsWalkerId != _targetPlainsWalkerId);
+        require (creatures[plainsWalkers[_targetPlainsWalkerId].creatureList[_creatureIndex]].readyTime <= block.timestamp);
+        creatures[plainsWalkers[_targetPlainsWalkerId].creatureList[_creatureIndex]].readyTime = uint32(block.timestamp + 6 hours);
         //  defender creatures[plainsWalkers[_targetPlainsWalkerId].creatureList[index]]
         // attacker creatures[plainsWalkers[_plainsWalkerId].creatureList[_creatureIndex]]
-        require (_plainsWalkerId != _targetPlainsWalkerId);
         bool foundCreature = false;
         uint index;
         for (uint i = 0; i < plainsWalkers[_targetPlainsWalkerId].creatureList.length; i++) {

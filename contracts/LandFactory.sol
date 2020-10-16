@@ -46,7 +46,6 @@ contract LandFactory is Ownable{
         uint id = lands.length -1;
         landToOwner[id] = msg.sender;
         landOwnerCount[msg.sender]++;
-        landOwnerCount[msg.sender] ++;
     }
 
     /**
@@ -60,7 +59,7 @@ contract LandFactory is Ownable{
     /**
      * @dev This funtion returns the indexes of the lands that the address owns
      */
-    function getLandByOwner(address _owner) external view returns(uint[] memory) {
+    function getLandByOwner(address _owner) external view returns(uint[] memory result) {
         uint[] memory result = new uint[](landOwnerCount[_owner]);
         uint counter = 0;
         for (uint i = 0; i < lands.length; i++) {

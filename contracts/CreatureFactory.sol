@@ -25,11 +25,11 @@ contract CreatureFactory{
     }
     
     // The next id is used if there are no ids in deletedCreatureIds.
-    uint nextId;
+    uint nextId = 0;
     // Keep track of ids that have died in order to reduce the the amount of complex array manipulations required.
     uint[] deletedCreatureIds;
     // An array of Creatures.
-    Creature[] public creatures;
+    Creature[] creatures;
     
     /**
      * @dev Constructs a creature based on an array of mana. It creates the features of
@@ -69,16 +69,19 @@ contract CreatureFactory{
         uint id;
         if (deletedCreatureIds.length == 0){
             id = nextId;
+            // Place creature into array at an open position.
+            uint32 readyTime = uint32(block.timestamp + 6 hours);
+            
+            creatures.push(Creature(uint16(attack), uint16(defence), readyTime, false));
             nextId ++;
         } else {
             id = deletedCreatureIds[deletedCreatureIds.length - 1];
+            // Place creature into array at an open position.
+            uint32 readyTime = uint32(block.timestamp + 6 hours);
+            
+            creatures[id] = Creature(uint16(attack), uint16(defence), readyTime, false);
             deletedCreatureIds.pop();
         }
-
-        // Place creature into array at an open position.
-        
-        creatures[id] = Creature(uint16(attack), uint16(defence), uint32(block.timestamp + 6 hours), false);
-        
         // Return the new creatureId to be kept track of by a plainswalker.
         return id;
     }

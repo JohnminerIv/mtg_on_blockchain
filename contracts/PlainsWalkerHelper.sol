@@ -67,7 +67,7 @@ contract PlainsWalkerHelper is PlainsWalkerFactory{
     /**
      * @dev Get information on a plainsWalker through its id.
      */
-    function getPlainswalkerInfoById(uint _id) external view ownerOfPlainsWalker(_id) returns(string memory name, bool isActive, uint16 health, uint16[5] memory mana){
-        return (plainsWalkers[_id].name, plainsWalkers[_id].isActive, plainsWalkers[_id].health, plainsWalkers[_id].mana);
+    function getPlainswalkerInfoById(uint _id) external view ownerOfPlainsWalker(_id) returns(string memory name, bool isActive, uint16 health, uint16[5] memory mana, uint[] memory creatureIndex){
+        return (plainsWalkers[_id].name, plainsWalkers[_id].isActive, plainsWalkers[_id].health, plainsWalkers[_id].mana, plainsWalkers[_id].creatureList);
     }
 }

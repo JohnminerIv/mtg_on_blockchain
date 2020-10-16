@@ -1,0 +1,26 @@
+{
+  "name": "mtg_on_blockchain",
+  "version": "1.0.0",
+  "description": "none",
+  "main": "app.py",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "web3": "^1.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "N/a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnminerIv/mtg_on_blockchain.git"
+  },
+  "author": "John Miner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JohnminerIv/mtg_on_blockchain/issues"
+  },
+  "homepage": "https://github.com/JohnminerIv/mtg_on_blockchain#readme"
+}
