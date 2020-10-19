@@ -1019,12 +1019,36 @@ function displayLands() {
     });
 }
 function displayPlainsWalkers() {
-    getAccounts(function(result){
-        LandContract.methods.landNames(0).call({from: String(result[0])}).then(function(result){
-            document.getElementById("landList").remove()
+    getAccounts(function(resultAcc){
+        GameLogic.methods.getPlainsWalkersByOwner(String(resultAcc[0])).call({from: String(resultAcc[0])}).then(function(result){
+            document.getElementById("PlainswalkerList").remove()
             var node = document.createElement("UL")
-            node.setAttribute('id', "landList")
-            document.getElementById('lands').appendChild(node)
+            node.setAttribute('id', "PlainswalkerList")
+            document.getElementById('Plainswalkers').appendChild(node)
+            for (let i = 0; i < result.length; i++) {
+                var node = document.createElement("LI");
+                node.setAttribute('id', 'plainW'+String(i))
+                document.getElementById("PlainswalkerList").appendChild(node);
+                console.log(result)
+            }
+            for (let i = 0; i < result.length; i++) {
+                GameLogic.methods.getPlainswalkerInfoById(result[i]).call({from: String(resultAcc[0])}).then(function(resultInner){
+                    var textnode = document.createTextNode(' Plainwalker Info = ' + String(resultInner));
+                    var node = document.getElementById('plainW'+String(i));
+                    var textnode = document.createTextNode('Name = ' + resultInner[0]);
+                    node.appendChild(textnode);
+                    var textnode = document.createTextNode(' isActive = ' + String(resultInner.isActive));
+                    node.appendChild(textnode);
+                    var textnode = document.createTextNode(' health = ' + String(resultInner.health));
+                    node.appendChild(textnode);
+                    var textnode = document.createTextNode(' mana = ' + String(resultInner.mana));
+                    node.appendChild(textnode);
+                    var textnode = document.createTextNode(' creatureIndex = ' + String(resultInner.creatureIndex));
+                    node.appendChild(textnode);
+                    console.log(resultInner);
+                });
+                
+            }
             var node = document.createElement("LI");
             var textnode = document.createTextNode(result);
             node.appendChild(textnode);
