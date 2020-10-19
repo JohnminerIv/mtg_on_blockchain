@@ -4,10 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My web3 Application</title>
+    <script src="{{ url_for('static', filename='GameLogicAs_ERC721.json') }}"></script>
+    <script src="{{ url_for('static', filename='LandFactoryAsERC721.json') }}"></script>
     <script src="{{ url_for('static', filename='web3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='mtgscript.js') }}"></script>
 </head>
 <body>
+    <div id='Intro'>
+        <p>Welcome to MTG on the block chain!</p>
+        <input type="text" id="plainsWalkerName" value='Name'>
+        <button type="button" onclick="createRandomPlainsWalker()" >get your first Plainwalker</button>
+        <button type="button" onclick="buyRandomPlainswalker()" >Buy another for 0.02 eth</button>
+    </div>
+    <div id='Plainswalkers'>
+        <p>Your Plainswalkers</p>
+        <button type="button" onclick="displayPlainsWalkers()" >Reload Plainswalker Info</button>
+        <ul id='PlainswalkerList'></ul>
+    </div>
+    <div id='lands'>
+        <p>Your lands</p>
+        <button type="button" onclick="purchaseLand()" >Purchase land</button>
+        <button type="button" onclick="displayLands()" >Reload Land Info</button>
+        <button type="button" onclick="returnLandNameRed()" >Reload Land Info</button>
+        <ul id='landList'></ul>
+    </div>
+    <div id='creatures'>
+        <p>Your creatures</p>
+        <button type="button" onclick="summonCreature()" > Summon Creature</button>
+        <button type="button" onclick="displayCreatures()" >Reload creature Info</button>
+        <ul id='creatureList'></ul>
+    </div>
+
+
+
+
 
     
 </body>
